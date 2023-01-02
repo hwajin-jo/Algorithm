@@ -1,4 +1,4 @@
-package swea;
+package swea.no2072;
 
 import java.util.Scanner;
 
