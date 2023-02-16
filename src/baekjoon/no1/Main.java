@@ -4,8 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 
-
-// 7576 토마토 (BFS)
 class Node {
     private int x;
     private int y;
@@ -88,9 +86,9 @@ public class Main {
 
 
         for (int i = 0; i < n; i++) {
-           for (int j = 0; j < m; j++) {
-               graph[i][j] = sc.nextInt();
-           }
+            for (int j = 0; j < m; j++) {
+                graph[i][j] = sc.nextInt();
+            }
         }
 
         System.out.println(bfs(graph));
