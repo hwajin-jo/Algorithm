@@ -1,53 +1,60 @@
 package programmers.lv1.no14;
 
-import java.util.HashMap;
+import java.util.Arrays;
 
+// 로또의 최고 순위와 최저 순
 public class Solution {
 
-    public int solution(String s) {
-        int answer = 0;
-        String temp = "";
+    public int[] solution(int[] lottos, int[] win_nums) {
+        int[] answer = new int[2];
 
-        HashMap<String, String> hashMap = new HashMap<>();
+        Arrays.sort(lottos);
+        Arrays.sort(win_nums);
 
-        hashMap.put("zero", "0");
-        hashMap.put("one", "1");
-        hashMap.put("two", "2");
-        hashMap.put("three", "3");
-        hashMap.put("four", "4");
-        hashMap.put("five", "5");
-        hashMap.put("six", "6");
-        hashMap.put("seven", "7");
-        hashMap.put("eight", "8");
-        hashMap.put("nine", "9");
+        int max_rank = 7;
 
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-
-            Character c = s.charAt(i);
-            int num = c - '0';
-            if (num >= 0 && num <= 9) {
-                temp += num;
-            } else {
-                sb.append(c);
-                if (hashMap.containsKey(sb.toString())) {
-                   temp += hashMap.get(sb.toString());
-                   sb.delete(0, sb.length());
-                }
-            }
-
+        for (int i = 0; i < lottos.length; i++) {
+           for (int j = 0; j < win_nums.length; j++) {
+               if (lottos[i] == win_nums[j] || lottos[i] == 0) {
+                   max_rank--;
+                   break;
+               }
+           }
         }
 
-        answer = Integer.parseInt(temp);
+        int min_rank = 7;
+
+        for (int i = 0; i < lottos.length; i++) {
+            for (int j = 0; j < win_nums.length; j++) {
+                if (lottos[i] == win_nums[j]) {
+                    min_rank--;
+                    break;
+                }
+            }
+        }
+
+
+        if (min_rank == 7) {
+            min_rank = 6;
+        }
+
+        if (max_rank == 7) {
+            max_rank = 6;
+        }
+
+        answer[0] = max_rank;
+        answer[1] = min_rank;
 
         return answer;
     }
 
     public static void main(String[] args) {
         Solution sol = new Solution();
+        int[] lottos = { 44, 1, 0, 0, 31, 25 };
+        int[] win_nums = { 31, 10, 45, 1, 6, 19 };
 
-        String s = "23four5six7";
-
-        System.out.println(sol.solution(s));
+        System.out.println(sol.solution(lottos, win_nums));
     }
+
+
 }

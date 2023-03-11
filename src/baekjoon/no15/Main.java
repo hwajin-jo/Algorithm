@@ -1,38 +1,31 @@
 package baekjoon.no15;
 
-import java.util.HashSet;
 import java.util.Scanner;
 
-// 14425 - 문자열 집합
+// 8958 - OX퀴즈
 public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         int n = sc.nextInt();
-        int m = sc.nextInt();
-        sc.nextLine(); // 공백제거
+        sc.nextLine();
 
-        int size = n + m;
-        String[] data = new String[m];
-        HashSet hashSet = new HashSet();
-        for (int i = 0; i < size; i++) {
-            if (i < n) {
-                String input = sc.nextLine();
-                hashSet.add(input);
-            } else {
-                String input = sc.nextLine();
-                data[i-n] = input;
+        int score = 0;
+        for (int i = 0; i < n; i++) {
+            String str = sc.nextLine();
+            int cnt = 0;
+            for (int j = 0; j < str.length(); j++) {
+
+                if (str.charAt(j) == 'O') {
+                    cnt++;
+                } else {
+                    cnt = 0;
+                }
+                score += cnt;
             }
+            System.out.println(score);
+            score = 0;
         }
-
-
-
-        int cnt = 0;
-        for (int i = 0; i < m; i++) {
-            if (hashSet.contains(data[i])) cnt++;
-        }
-
-        System.out.println(cnt);
     }
 }

@@ -1,29 +1,42 @@
 package programmers.lv2.no11;
 
-// 해시 >  전화번호 목록
+import java.util.Collections;
+import java.util.PriorityQueue;
+
+// 프린터
 public class Solution {
 
-    public boolean solution(String[] phone_book) {
-        boolean answer = true;
+    public int solution(int[] priorities, int location) {
+        int answer = 0;
 
-        for (int i = 0; i < phone_book.length; i++) {
-            String origin = phone_book[i];
-            for (int j = 1; j < phone_book.length; j++) {
-                String test = phone_book[j];
-                for (int k = 1; k < test.length(); k++) {
-                    String temp = test.substring(0, k);
-                    if (temp.equals(origin)) return false;
+        PriorityQueue<Integer> priorityQueue = new PriorityQueue<>(Collections.reverseOrder());
+
+        for (int i = 0; i < priorities.length; i++) {
+            priorityQueue.offer(priorities[i]);
+        }
+
+        while (!priorityQueue.isEmpty()) {
+            for (int i = 0; i < priorities.length; i++) {
+                if (priorities[i] == priorityQueue.peek()) {
+                    if (i == location) {
+                        answer++;
+                        return answer;
+                    }
+                    priorityQueue.poll();
+                    answer++;
                 }
             }
         }
 
-        return answer;
+        return -1;
     }
 
     public static void main(String[] args) {
         Solution sol = new Solution();
-        String[] phone_book = {"112", "113112", "11311211"};
 
-        System.out.println(sol.solution(phone_book));
+        int[] properties = {1, 1, 9, 1, 1, 1};
+        int location = 0;
+
+        System.out.println(sol.solution(properties, location));
     }
 }

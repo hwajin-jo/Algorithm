@@ -1,23 +1,28 @@
 package programmers.lv1.no13;
 
-// 내적
+import java.util.HashMap;
+
+// 가장 가까운 글자
 public class Solution {
 
-    public int solution(int[] a, int[] b) {
-        int answer = 0;
+    public int[] solution(String s) {
+        int[] answer = new int[s.length()];
 
-        for (int i = 0; i < a.length; i++) {
-            answer += a[i] * b[i];
+        HashMap<Character, Integer> hashMap = new HashMap<>();
+
+        for (int i = 0; i < s.length(); i++) {
+            if (!hashMap.containsKey(s.charAt(i))) answer[i] = -1;
+            else answer[i] = i - hashMap.get(s.charAt(i));
+            hashMap.put(s.charAt(i), i);
         }
+
         return answer;
     }
 
     public static void main(String[] args) {
         Solution sol = new Solution();
+        String s = "banana";
 
-        int[] a = {1, 2, 3, 4};
-        int[] b = {-3, -1, 0, 2};
-
-        System.out.println(sol.solution(a, b));
+        System.out.println(sol.solution(s));
     }
 }
