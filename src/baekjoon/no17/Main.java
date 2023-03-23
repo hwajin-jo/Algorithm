@@ -1,6 +1,5 @@
 package baekjoon.no17;
 
-import java.util.Objects;
 import java.util.Scanner;
 
 // 1991 - 트리 순회
