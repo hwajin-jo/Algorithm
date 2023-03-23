@@ -3,26 +3,24 @@ package programmers.lv1.no16;
 public class Solution {
 
     public int solution(int a, int b, int n) {
-        int sum = 0;
+        int answer = 0;
 
-        while (n > b) {
-            int newCoke = n / a;
-            int remainBottle = n % a;
-            n = newCoke + remainBottle;
+        while (n >= a) {
+            answer += (n / a) * b;
 
-            sum += newCoke;
+            int remain = n % a;
+            n = (n / a) * b + remain;
         }
 
-
-        return sum;
+        return answer;
     }
 
     public static void main(String[] args) {
         Solution sol = new Solution();
 
         int a = 3;
-        int b = 1;
-        int n = 20;
+        int b = 2;
+        int n = 10;
 
         System.out.println(sol.solution(a, b, n));
     }
