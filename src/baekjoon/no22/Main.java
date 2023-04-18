@@ -1,45 +1,35 @@
 package baekjoon.no22;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
+
+    public static int N, M, V;
+    public static boolean[] visited = new boolean[1000];
+    public static int[][] graph = new int[1000][1000];
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        int N = sc.nextInt();
-        int K = sc.nextInt();
+        N = sc.nextInt(); // 정점의 개수
+        M = sc.nextInt(); // 간선의 개수
+        V = sc.nextInt(); // 탐색시작 정점
 
-        ArrayList<Integer> arrayList = new ArrayList<>();
+        for (int i = 0; i < M; i++) {
+            int x = sc.nextInt();
+            int y = sc.nextInt();
 
-        for (int i = 0; i < N; i++) {
-            arrayList.add(i+1);
+            graph[x][y] = 1;
+            graph[y][x] = 1;
         }
 
-        int cnt = 0;
-        int i = 0;
+        dfs(V);
+    }
 
-        ArrayList<Integer> result = new ArrayList<>();
-        while (!arrayList.isEmpty()) {
-            if (i == arrayList.size()) i = 0;
+    public static void dfs(int start) {
+        visited[start] = true;
 
-            if (cnt == K-1) {
-                int data = arrayList.remove(i);
-                result.add(data);
-                cnt = 0;
-            } else {
-                i++;
-                cnt++;
-            }
-        }
 
-        System.out.print("<");
-        for (int j = 0; j < result.size(); j++) {
-            if (j == result.size() -1) {
-                System.out.print(result.get(j));
-            } else {
-                System.out.print(result.get(j) + ", ");
-            }
-        }
-        System.out.println(">");
     }
 }
