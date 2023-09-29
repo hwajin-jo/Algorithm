@@ -1,43 +1,34 @@
 package baekjoon.no23;
 
-import java.util.*;
-// 1021 - 회전하는 큐
+import java.util.Scanner;
+
 public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        int n = sc.nextInt();
-        int m = sc.nextInt();
+        String str1 = sc.nextLine();
+        String str2 = sc.nextLine();
 
-        int[] arr = new int[m];
+        int[] count_1 = getAlphabetCountArray(str1);
+        int[] count_2 = getAlphabetCountArray(str2);
 
-        for (int i = 0; i < m; i++) {
-            arr[i] = sc.nextInt();
-        }
-        LinkedList<Integer> q = new LinkedList<>();
+        int answer = 0;
 
-        for (int i = 1; i <= n; i++) {
-            q.offer(i);
+        for (int i = 0; i < 26; i++) {
+            answer += Math.abs(count_1[i] - count_2[i]);
         }
 
-        int i = 0;
-        int cnt = 0;
-        while (q.size() > n - m) {
-            if (q.peek() == arr[i]) {
-                q.poll();
-                i++;
-            } else {
-                if (q.indexOf(arr[i]) <= q.size()/2) {
-                    q.offer(q.poll());
-                } else {
-                    q.offerFirst(q.pollLast());
-                }
-                cnt++;
-            }
+        System.out.println(answer);
+    }
 
+    private static int[] getAlphabetCountArray(String str1) {
+        int[] count = new int[26];
+
+        for (int i = 0; i < str1.length(); i++) {
+            count[str1.charAt(i) - 'a']++;
         }
 
-        System.out.println(cnt);
+        return count;
     }
 }

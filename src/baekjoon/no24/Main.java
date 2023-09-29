@@ -7,36 +7,34 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        int N = sc.nextInt();
-        int M = sc.nextInt();
+        String input = sc.nextLine();
 
-        int[] basket = new int[N];
+        input = input.toUpperCase();
 
-        StringBuilder sb = new StringBuilder();
+        int[] count = new int[26];
 
-        for (int i = 1; i <= N; i++) {
-            basket[i-1] = i;
+        for (int i = 0; i < input.length(); i++) {
+           count[input.charAt(i) - 'A']++;
         }
 
-        for (int i = 0; i < M; i++) {
-            int start = sc.nextInt();
-            int end = sc.nextInt();
+        int max = 0;
+        for (int i = 0; i < count.length; i++) {
+            max = Math.max(count[i], max);
+        }
 
-            --start;
-            --end;
-            while (start <= end) {
-                int tmp = basket[start];
-                basket[start] = basket[end];
-                basket[end] = tmp;
-
-                start++;
-                end--;
+        int cnt = 0;
+        int max_index = 0;
+        for (int i = 0; i < count.length; i++) {
+            if (count[i] == max) {
+                cnt++;
+                max_index = i;
             }
         }
 
-        for (int i = 0; i < basket.length; i++) {
-            System.out.print(basket[i] + " ");
+        if (cnt == 1) {
+            System.out.println((char) (max_index + 'A'));
+        } else {
+            System.out.println("?");
         }
-        System.out.println();
     }
 }

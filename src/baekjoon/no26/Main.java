@@ -1,55 +1,38 @@
 package baekjoon.no26;
 
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
-// 13335 - 트럭
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        StringTokenizer st = new StringTokenizer(br.readLine());
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
 
-        int N = Integer.parseInt(st.nextToken()); // 트럭의 수
-        int W = Integer.parseInt(st.nextToken()); // 다리의 길이
-        int L = Integer.parseInt(st.nextToken()); // 최대하중
+        String now = sc.nextLine();
+        String target = sc.nextLine();
 
-        Queue<Integer> truck = new LinkedList<>();
-        st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            truck.offer(Integer.parseInt(st.nextToken()));
-        }
+        String[] nowData = now.split(":");
+        int hour = Integer.parseInt(nowData[0]);
+        int minutes = Integer.parseInt(nowData[1]);
+        int seconds = Integer.parseInt(nowData[2]);
 
-        Queue<Integer> bridge = new LinkedList<>();
+        int total_now = hour * 3600 + minutes * 60 + seconds;
 
-        for (int i = 0; i < W; i++) {
-            bridge.offer(0);
-        }
+        String[] targetData = target.split(":");
+        hour = Integer.parseInt(targetData[0]);
+        minutes = Integer.parseInt(targetData[1]);
+        seconds = Integer.parseInt(targetData[2]);
+        int total_target = hour * 3600 + minutes * 60 + seconds;
 
-        int time = 0;
-        int sum = 0;
+        int result = total_target - total_now;
 
-        while (!bridge.isEmpty()) {
-            time++;
-            sum -= bridge.poll();
+        if (result <= 0) result += 24 * 3600;
 
-            if (!truck.isEmpty()) {
-                int weight = truck.peek();
+        hour = result / 3600;
+        result = result % 3600;
+        minutes = result % 3600 / 60;
+        seconds = result % 60;
 
-                if (sum + weight <= L) {
-                    int newtruck = truck.poll();
-                    sum += newtruck;
-                    bridge.offer(newtruck);
-                } else {
-                    bridge.offer(0);
-                }
-            }
-        }
+        System.out.printf("%02d:%02d:%02d\n", hour, minutes, seconds);
 
-
-        bw.write(time + "\n");
-        bw.flush();
-        bw.close();
     }
 }
