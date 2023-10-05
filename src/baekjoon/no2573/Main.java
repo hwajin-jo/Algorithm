@@ -7,56 +7,57 @@ import java.util.Scanner;
 public class Main {
 
     static int N, M;
-    static int[][] graph;
+    static int[][] earth;
     static boolean[][] visited;
     static List<Ice> iceList;
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
+    static int[] dr = {-1, 1, 0, 0};
+    static int[] dc = {0, 0, -1, 1};
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         N = sc.nextInt();
         M = sc.nextInt();
 
-        graph = new int[N][M];
+        earth = new int[N][M];
         visited = new boolean[N][M];
         iceList = new ArrayList<>();
 
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < M; j++) {
-                graph[i][j] = sc.nextInt();
-                if (graph[i][j] > 0) {
-                    iceList.add(new Ice(i, j, graph[i][j]));
+                earth[i][j] = sc.nextInt();
+                if (earth[i][j] > 0) {
+                    iceList.add(new Ice(i, j, earth[i][j]));
                 }
+
                 visited[i][j] = true;
             }
         }
 
         for (int year = 1; !iceList.isEmpty(); year++) {
-            // 시간이 흐를 때 마다 빙산 녹이기
             for (Ice ice : iceList) {
-                for (int j = 0; j < 4; j++) {
-                    int nx = ice.x + dx[j];
-                    int ny = ice.y + dy[j];
+                for (int i = 0; i < 4; i++) {
+                    int nr = ice.row + dr[i];
+                    int nc = ice.col + dc[i];
 
-                    if (graph[nx][ny] == 0) ice.height--;
+                    if (earth[nr][nc] == 0) ice.height--;
                 }
             }
 
-            // 녹은 빙산들의 길이를 한번에 갱신
             for (int i = 0; i < iceList.size(); i++) {
                 Ice ice = iceList.get(i);
+
                 if (ice.height <= 0) {
-                    graph[ice.x][ice.y] = 0;
+                    earth[ice.row][ice.col] = 0;
                     iceList.set(i, iceList.get(iceList.size()-1));
                     iceList.remove(iceList.size() - 1);
                     i--;
                 } else {
-                    visited[ice.x][ice.y] = false;
+                    visited[ice.row][ice.col] = false;
                 }
             }
 
-            if (iceList.size() > 0 && dfs(iceList.get(0).x, iceList.get(0).y) != iceList.size()) {
+            if (iceList.size() > 0 && dfs(iceList.get(0).row, iceList.get(0).col) != iceList.size()) {
                 System.out.println(year);
                 System.exit(0);
             }
@@ -65,15 +66,16 @@ public class Main {
         System.out.println(0);
     }
 
-    static int dfs(int x, int y) {
-        visited[x][y] = true;
+    static int dfs(int row, int col) {
+        visited[row][col] = true;
         int cnt = 1;
+        for (int i = 0 ; i < 4; i++) {
+            int nr = row + dr[i];
+            int nc = col + dc[i];
 
-        for (int i = 0; i < 4; i++) {
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-
-            if (!visited[nx][ny]) cnt += dfs(nx, ny);
+            if (earth[nr][nc] > 0 && !visited[nr][nc]) {
+                cnt += dfs(nr, nc);
+            }
         }
 
         return cnt;
@@ -81,13 +83,14 @@ public class Main {
 }
 
 class Ice {
-    int x;
-    int y;
+    int row;
+    int col;
     int height;
 
-    public Ice(int x, int y, int h) {
-        this.x = x;
-        this.y = y;
+    public Ice(int r, int c, int h) {
+        row = r;
+        col  = c;
         height = h;
     }
 }
+
