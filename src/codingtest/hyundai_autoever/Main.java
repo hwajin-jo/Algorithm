@@ -1,4 +1,4 @@
-package codingtest;
+package codingtest.hyundai_autoever;
 
 import java.util.*;
 import java.io.*;
