@@ -1,11 +1,15 @@
 package baekjoon.no17225;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
         int bTime = sc.nextInt();
         int rTime = sc.nextInt();
         int n = sc.nextInt();
@@ -20,61 +24,74 @@ public class Main {
 
             switch (color) {
                 case 'B':
-                if (!blueQ.isEmpty() && blueQ.getLast() + bTime > time) {
-                    time = blueQ.getLast() + bTime;
-                }
-                for (int j = 0; j < cnt; j++) {
-                    blueQ.offer(time);
-                    time += bTime;
-                }
-                break;
-                case 'R':
-                    if (!redQ.isEmpty() && redQ.getLast() + rTime > time) {
-                        time = redQ.getLast() + rTime;
-                    }
                     for (int j = 0; j < cnt; j++) {
-                        redQ.offer(time);
+                        if (blueQ.isEmpty()) {
+                            blueQ.offer(time);
+                        } else {
+                            if (blueQ.getLast() + bTime > time) {
+                                time = blueQ.getLast() + bTime;
+                                blueQ.offer(time);
+                            } else {
+                                blueQ.offer(time);
+                            }
+                        }
+                        time += bTime;
+                    }
+                    break;
+                case 'R':
+                    for (int j = 0; j < cnt; j++) {
+                        if (redQ.isEmpty()) {
+                            redQ.offer(time);
+                        } else {
+                            if (redQ.getLast() + rTime > time) {
+                                time = redQ.getLast() + rTime;
+                                redQ.offer(time);
+                            } else {
+                                redQ.offer(time);
+                            }
+                        }
                         time += rTime;
                     }
                     break;
             }
         }
 
-        List<Integer> blueOrder = new LinkedList<>();
-        List<Integer> redOrder = new LinkedList<>();
         int orderNumber = 0;
+        List<Integer> blueList = new LinkedList<>();
+        List<Integer> redList = new LinkedList<>();
 
         while (!blueQ.isEmpty() && !redQ.isEmpty()) {
             if (blueQ.peek() <= redQ.peek()) {
                 blueQ.poll();
-                blueOrder.add(++orderNumber);
+                blueList.add(++orderNumber);
             } else {
                 redQ.poll();
-                redOrder.add(++orderNumber);
+                redList.add(++orderNumber);
             }
         }
 
         while (!blueQ.isEmpty()) {
             blueQ.poll();
-            blueOrder.add(++orderNumber);
+            blueList.add(++orderNumber);
         }
 
         while (!redQ.isEmpty()) {
             redQ.poll();
-            redOrder.add(++orderNumber);
+            redList.add(++orderNumber);
         }
 
-        System.out.println(blueOrder.size());
+        System.out.println(blueList.size());
 
-        for (Integer order : blueOrder) {
-            System.out.print(order + " ");
+        for (Integer num : blueList) {
+            System.out.print(num + " ");
         }
+
         System.out.println();
 
-        System.out.println(redOrder.size());
+        System.out.println(redList.size());
 
-        for (Integer order : redOrder) {
-            System.out.print(order + " ");
+        for (Integer num : redList) {
+            System.out.print(num + " ");
         }
         System.out.println();
     }
