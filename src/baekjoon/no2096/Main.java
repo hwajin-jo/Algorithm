@@ -1,6 +1,5 @@
 package baekjoon.no2096;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Main {
@@ -39,7 +38,6 @@ public class Main {
                 dp[i][j] = 1000001;
             }
         }
-
 
         dp[0][0] = arr[0][0];
         dp[0][1] = arr[0][1];
