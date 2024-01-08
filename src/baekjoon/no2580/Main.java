@@ -63,7 +63,7 @@ public class Main {
         }
 
         int set_row = (row / 3) * 3;
-        int set_col = (row / 3) * 3;
+        int set_col = (col / 3) * 3;
 
         for (int i = set_row; i < set_row + 3; i++) {
             for (int j = set_col; j < set_col + 3; j++) {
