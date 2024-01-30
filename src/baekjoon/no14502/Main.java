@@ -1,6 +1,5 @@
 package baekjoon.no14502;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -9,7 +8,7 @@ public class Main {
     static int ans;
     static int n, m;
     static int[][] map;
-    static int[][] origin;
+    static int[][] originMap;
     static int[] dr = {-1, 1, 0, 0};
     static int[] dc = {0, 0, -1, 1};
     static Queue<Point> q;
@@ -18,62 +17,51 @@ public class Main {
 
         n = sc.nextInt();
         m = sc.nextInt();
-
-        origin = new int[n][m];
         map = new int[n][m];
-        q = new LinkedList<>();
+        originMap = new int[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                origin[i][j] = sc.nextInt();
-
-                if (origin[i][j] == 2)
-                    q.add(new Point(i, j));
+                originMap[i][j] = sc.nextInt();
             }
         }
 
         ans = -1;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                copyData();
-                makeWall(0, i, j);
-            }
-        }
+        makeWall(0);
 
         System.out.println(ans);
     }
 
-    static void copyData() {
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                map[i][j] = origin[i][j];
-            }
-        }
-    }
-
-    static void makeWall(int cnt, int r, int c) {
+    static void makeWall(int cnt) {
         if (cnt == 3) {
             spreadVirus();
-            ans = Math.max(ans, countSafeArea());
             return;
         }
 
-        if (r == n)
-            return;
-
-        if (c == m)
-            makeWall(cnt, r + 1, 0);
-
-        if (r < n && c < m) {
-            if (map[r][c] == 0) {
-                map[r][c] = 1;
-                makeWall(cnt + 1, r, c + 1);
-            } else {
-                makeWall(cnt, r, c + 1);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (originMap[i][j] == 0) {
+                    originMap[i][j] = 1;
+                    makeWall(cnt + 1);
+                    originMap[i][j] = 0;
+                }
             }
         }
     }
 
     static void spreadVirus() {
+        q = new LinkedList<>();
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (originMap[i][j] == 2)
+                    q.add(new Point(i, j));
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            map[i] = originMap[i].clone();
+        }
+
         while (!q.isEmpty()) {
             Point now = q.poll();
 
@@ -88,6 +76,8 @@ public class Main {
                 }
             }
         }
+
+        ans = Math.max(ans, countSafeArea());
     }
 
     static int countSafeArea() {
