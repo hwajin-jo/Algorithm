@@ -1,20 +1,15 @@
 package baekjoon.no15683;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 public class Main {
 
-    static int ans = Integer.MAX_VALUE;
     static int n, m;
-    static List<CCTV> cctvList;
+    static int ans = Integer.MAX_VALUE;
     static int[][] map;
-    static int[][] dir = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
-    static int[][] cctv1 = {{0}, {1}, {2}, {3}};
-    static int[][] cctv2 = {{0, 1}, {2, 3}};
-    static int[][] cctv3 = {{0, 2}, {0, 3}, {1, 2}, {1, 3}};
-    static int[][] cctv4 = {{0, 1, 2}, {0, 1, 3}, {0, 2, 3}, {1, 2, 3}};
-    static int[][] cctv5 = {{0, 1, 2, 3}};
-
+    static List<Point> cctvList;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -27,95 +22,168 @@ public class Main {
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 map[i][j] = sc.nextInt();
-                if (1 <= map[i][j] && map[i][j] <= 5) {
-                    cctvList.add(new CCTV(i, j, map[i][j]));
+                if (map[i][j] != 0 && map[i][j] != 6) {
+                    cctvList.add(new Point(i, j, map[i][j]));
                 }
             }
         }
 
-        solve(0);
+        solve(0, map);
         System.out.println(ans);
     }
 
-    static void solve(int idx) {
+    static void solve(int idx, int[][] map) {
         if (idx == cctvList.size()) {
-            ans = Math.min(ans, countArea());
+            ans = Math.min(ans, cntZeroArea(map));
             return;
         }
 
-        CCTV cctv = cctvList.get(idx);
-        if (cctv.v == 1) {
-            for (int i = 0; i < cctv1.length; i++) {
-                monitor(cctv, cctv1[i], 7);
-                solve(idx + 1);
-                monitor(cctv, cctv1[i], 0);
-            }
-        } else if (cctv.v == 2) {
-            for (int i = 0; i < cctv2.length; i++) {
-                monitor(cctv, cctv2[i], 7);
-                solve(idx + 1);
-                monitor(cctv, cctv2[i], 0);
-            }
-        } else if (cctv.v == 3) {
-            for (int i = 0; i < cctv3.length; i++) {
-                monitor(cctv, cctv3[i], 7);
-                solve(idx + 1);
-                monitor(cctv, cctv3[i], 0);
-            }
-        } else if (cctv.v == 4) {
-            for (int i = 0; i < cctv4.length; i++) {
-                monitor(cctv, cctv4[i], 7);
-                solve(idx + 1);
-                monitor(cctv, cctv4[i], 0);
-            }
-        } else if (cctv.v == 5) {
-            for (int i = 0; i < cctv5.length; i++) {
-                monitor(cctv, cctv5[i], 7);
-                solve(idx + 1);
-                monitor(cctv, cctv5[i], 0);
-            }
+        Point cctv = cctvList.get(idx);
+        int[][] tmp;
+        int cctvNum = cctv.n;
+        int r = cctv.r;
+        int c = cctv.c;
+        if (cctvNum == 1) {
+            tmp = copyMap(map);
+            checkLeft(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkDown(tmp, r, c);
+            solve(idx + 1, tmp);
+        } else if (cctvNum == 2) {
+            tmp = copyMap(map);
+            checkLeft(tmp, r, c);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            checkDown(tmp, r, c);
+            solve(idx + 1, tmp);
+        } else if (cctvNum == 3) {
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            checkLeft(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkDown(tmp, r, c);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkDown(tmp, r, c);
+            checkLeft(tmp, r, c);
+            solve(idx + 1, tmp);
+        } else if (cctvNum == 4) {
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            checkLeft(tmp, r, c);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            checkRight(tmp, r, c);
+            checkDown(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkDown(tmp, r, c);
+            checkLeft(tmp, r, c);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
+
+            tmp = copyMap(map);
+            checkDown(tmp, r, c);
+            checkLeft(tmp, r, c);
+            checkUp(tmp, r, c);
+            solve(idx + 1, tmp);
+        } else if (cctvNum == 5) {
+            tmp = copyMap(map);
+            checkUp(tmp, r, c);
+            checkDown(tmp, r, c);
+            checkLeft(tmp, r, c);
+            checkRight(tmp, r, c);
+            solve(idx + 1, tmp);
         }
     }
 
-    static void monitor(CCTV cctv, int[] d, int data) {
-        for (int i = 0; i < d.length; i++) {
-            Queue<CCTV> q = new LinkedList<>();
-            q.add(cctv);
-            while (!q.isEmpty()) {
-                CCTV now = q.poll();
-
-                int nr = now.r + dir[d[i]][0];
-                int nc = now.c + dir[d[i]][1];
-
-                if (nr < 0 || nc < 0 || nr >= n || nc >= m) continue;
-                if (map[nr][nc] == 6) continue;
-                map[nr][nc] = data;
-                q.add(new CCTV(nr, nc, now.v));
-            }
-        }
-    }
-
-    static int countArea() {
-        int res = 0;
-
+    static int cntZeroArea(int[][] map) {
+        int cnt = 0;
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (map[i][j] == 0)
-                    res++;
+                if (map[i][j] == 0) cnt++;
             }
         }
 
-        return res;
+        return cnt;
+    }
+
+    static void checkLeft(int[][] tmp, int r, int c) {
+        for (int i = c - 1; i >= 0; i--) {
+            if (tmp[r][i] == 6) return;
+            if (tmp[r][i] != 0) continue;
+            tmp[r][i] = -1;
+        }
+    }
+
+    static void checkRight(int[][] tmp, int r, int c) {
+        for (int i = c + 1; i < m; i++) {
+            if (tmp[r][i] == 6) return;
+            if (tmp[r][i] != 0) continue;
+            tmp[r][i] = -1;
+        }
+    }
+
+    static void checkUp(int[][] tmp, int r, int c) {
+        for (int i = r - 1; i >= 0; i--) {
+            if (tmp[i][c] == 6) return;
+            if (tmp[i][c] != 0) continue;
+            tmp[i][c] = -1;
+        }
+    }
+
+    static void checkDown(int[][] tmp, int r, int c) {
+        for (int i = r + 1; i < n; i++) {
+            if (tmp[i][c] == 6) return;
+            if (tmp[i][c] != 0) continue;
+            tmp[i][c] = -1;
+        }
+    }
+
+    static int[][] copyMap(int[][] map) {
+        int[][] tmp = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                tmp[i][j] = map[i][j];
+            }
+        }
+
+        return tmp;
     }
 }
 
-class CCTV {
-    int r, c;
-    int v;
+class Point {
+    int r, c, n;
 
-    public CCTV(int r, int c, int v) {
+    public Point(int r, int c, int n) {
         this.r = r;
         this.c = c;
-        this.v = v;
+        this.n = n;
     }
 }
