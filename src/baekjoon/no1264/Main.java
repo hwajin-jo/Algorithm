@@ -17,12 +17,14 @@ public class Main {
             if (input.equals("#"))
                 break;
 
-            input = input.replace(" ", "");
+//            input = input.replace(" ", "");
 //            input = input.replace(",", "");
 //            input = input.replace(".", "");
 //            input = input.replace("!", "");
-//            input = input.replace("\\?", "");
+//            input = input.replace("?", "");
 
+            input = input.replaceAll(" ", "");
+            input = input.replaceAll(",|\\.|!|\\?", "");
             input = input.toLowerCase();
 
             int cnt = 0;
