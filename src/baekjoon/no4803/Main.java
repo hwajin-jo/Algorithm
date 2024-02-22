@@ -8,7 +8,6 @@ public class Main {
 
     static List<Integer>[] tree;
     static boolean[] visited;
-    static boolean flag;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -31,8 +30,7 @@ public class Main {
 
             int res = 0;
             for (int i = 1; i <= n; i++) {
-                flag = true;
-                if (!visited[i] && isTree(i)) {
+                if (!visited[i] && isTree(i, 0)) {
                     res++;
                 }
             }
@@ -49,21 +47,16 @@ public class Main {
         }
     }
 
-    private static boolean isTree(int node) {
-        visited[node] = true;
+    private static boolean isTree(int cur, int parent) {
+        visited[cur] = true;
 
-        for (int i = 0; i < tree[node].size(); i++) {
-            int next = tree[node].get(i);
-
-            if (!visited[next]) {
-                tree[next].remove((Integer) node);
-                isTree(next);
-            } else {
-                flag= false;
-            }
+        for (Integer next : tree[cur]) {
+            if (next == parent) continue;
+            if (visited[next]) return false;
+            if (!isTree(next, cur)) return false;
         }
 
-        return flag;
+        return true;
     }
 
     private static void init(int n) {
