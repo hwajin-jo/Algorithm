@@ -13,12 +13,12 @@ public class Main {
         int[] dc = {0, 1, 0, -1};
 
         while (T-- > 0) {
-            Point turtle = new Point(250, 250, 0);
+            Point turtle = new Point(0, 0, 0);
             char[] cmd = sc.next().toCharArray();
-            int minR = 250;
-            int minC = 250;
-            int maxR = 250;
-            int maxC = 250;
+            int minR = 0;
+            int minC = 0;
+            int maxR = 0;
+            int maxC = 0;
 
             for (char c : cmd) {
                 int nr = -1;
@@ -54,7 +54,6 @@ public class Main {
                             dir = turtle.dir + 1;
                         }
                         break;
-
                 }
 
                 turtle.r = nr;
