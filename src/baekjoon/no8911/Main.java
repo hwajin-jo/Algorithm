@@ -20,7 +20,6 @@ public class Main {
             int maxR = 250;
             int maxC = 250;
 
-
             for (char c : cmd) {
                 int nr = -1;
                 int nc = -1;
