@@ -12,21 +12,14 @@ public class Main {
             int N = sc.nextInt();
             int[] dp = new int[11];
             dp[1] = 1;
-            dp[2] = 1;
-            dp[3] = 1;
+            dp[2] = 2;
+            dp[3] = 4;
 
-            System.out.println(solve(N, dp));
-        }
-    }
-    static int solve(int N, int[] dp) {
-        for (int i = 1; i <= N; i++) {
-            for (int j = 1; j <= 3; j++) {
-                if (i - j >= 0) {
-                    dp[i] += dp[i - j];
-                }
+            for (int i = 4; i < 11; i++) {
+                dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
             }
-        }
 
-        return dp[N];
+            System.out.println(dp[N]);
+        }
     }
 }
