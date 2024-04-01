@@ -34,7 +34,7 @@ public class Main {
 
         }
 
-        Collections.sort(list, (o1, o2) -> {
+        list.sort((o1, o2) -> {
             if (o1.length() == o2.length()) {
                 return o1.compareTo(o2);
             }
