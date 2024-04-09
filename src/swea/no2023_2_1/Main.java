@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class Main {
     // 상 우 하 좌  대각선
-    static int[] dr = {-1, 0, -1, 0, -1, -1, 1, 1};
-    static int[] dc = {0, 1, -0, -1, -1, 1, -1, 1};
+    static int[] dr = {-1, 0, 1, 0, -1, -1, 1, 1};
+    static int[] dc = {0, 1, 0, -1, -1, 1, -1, 1};
 
     static int[][] map;
     static Santa[] santa;
@@ -29,8 +29,6 @@ public class Main {
         rudolf = new Rudolf(sc.nextInt(), sc.nextInt(), -1);
         map[rudolf.r][rudolf.c] = -1;
 
-
-
         santa = new Santa[p + 1];
         for (int i = 1; i <= p; i++) {
             int idx = sc.nextInt();
@@ -43,23 +41,28 @@ public class Main {
 
         for (int i = 0; i < m; i++) {
             if (!isContinue()) break;
-
             moveRudolf();
-
-            for (int s = 1; s < p; s++) {
-                if (santa[i].isAlive && santa[i].wakeUp == 0) {
-                    moveSanta(santa[i]);
+            for (int s = 1; s <= p; s++) {
+                if (santa[s].isAlive && santa[s].wakeUp == 0) {
+                    moveSanta(santa[s]);
                 } else {
-                    santa[i].wakeUp--;
+                    santa[s].wakeUp--;
                 }
             }
-//            getBonus();
+            getBonus();
         }
 
         for (int i = 1; i <= p; i++) {
             System.out.print(santa[i].score + " ");
         }
         System.out.println();
+    }
+
+    private static void getBonus() {
+        for (int i = 1; i <= p; i++) {
+            if (santa[i].isAlive)
+                santa[i].score++;
+        }
     }
 
     static void moveRudolf() {
@@ -83,17 +86,19 @@ public class Main {
 
         Santa san = list.get(0);
         int d = getDirection(san, rudolf);
-        rudolf.r += dr[d];
-        rudolf.c += dc[d];
+        map[rudolf.r][rudolf.c] = 0;
+        rudolf.r -= dr[d];
+        rudolf.c -= dc[d];
+        map[rudolf.r][rudolf.c] = -1;
 
         if (san.r == rudolf.r && san.c == rudolf.c) {
             san.score += c;
-            san.r += dr[d] * c;
-            san.c += dr[d] * c;
-
+            san.r -= dr[d] * c;
+            san.c -= dc[d] * c;
             if (isRange(san.r, san.c)) {
                 san.wakeUp += 2;
-                 collision(san, d);
+                map[san.r][san.c] = san.idx;
+                interact(san, d);
             } else {
                 san.isAlive = false;
             }
@@ -108,7 +113,7 @@ public class Main {
             int nr = san.r + dr[d];
             int nc = san.c + dc[d];
 
-            if (!isRange(nr, nc) || map[nr][nc] != 0) continue;
+            if (!isRange(nr, nc) || map[nr][nc] > 0) continue;
 
             int distance = getDistance(nr, nc, rudolf.r, rudolf.c);
 
@@ -126,15 +131,24 @@ public class Main {
         map[san.r][san.c] = 0;
         san.r = nr;
         san.c = nc;
-        map[nr][nc] = san.idx;
 
         if (nr == rudolf.r && nc == rudolf.c) {
             san.score += d;
-            collision(san, nd);
+            san.r -= dr[nd] * d;
+            san.c -= dc[nd] * d;
+            san.wakeUp += 2;
+
+            if (!isRange(san.r, san.c)) san.isAlive = false;
+            else {
+                map[san.r][san.c] = san.idx;
+                interact(san, nd);
+            }
+        } else {
+            map[nr][nc] = san.idx;
         }
     }
 
-    static void collision(Santa san, int d) {
+    static void interact(Santa san, int d) {
         boolean isEnd = false;
 
         while (!isEnd) {
@@ -143,21 +157,24 @@ public class Main {
             for (int i = 1; i <= p; i++) {
                 Santa temp = santa[i];
 
-                if (san.idx != temp.idx && temp.isAlive && temp.r == san.r && temp.c == san.c) {
-                    temp.r += dr[d];
-                    temp.c += dc[d];
+                if (san.idx != temp.idx) {
+                    if (temp.isAlive && temp.r == san.r && temp.c == san.c) {
+                        temp.r -= dr[d];
+                        temp.c -= dc[d];
 
-                    if (!isRange(temp.r, temp.c)) temp.isAlive = false;
+                        if (!isRange(temp.r, temp.c)) temp.isAlive = false;
 
-                    san = temp;
-                    isEnd = false;
+                        san = temp;
+                        map[temp.r][temp.c] = san.idx;
+                        isEnd = false;
+                    }
                 }
             }
         }
     }
 
     static boolean isRange(int r, int c) {
-        return 0 <= r && r < n && 0 <= c && c < n;
+        return 1 <= r && r <= n && 1 <= c && c <= n;
     }
     static int getDirection(Santa santa, Rudolf rudolf) {
         int dir = -1;
@@ -187,7 +204,7 @@ public class Main {
 
     static boolean isContinue() {
         boolean flag = false;
-        for (int i = 0; i < santa.length; i++) {
+        for (int i = 1; i <= p; i++) {
             if (santa[i].isAlive) {
                 flag = true;
                 break;
