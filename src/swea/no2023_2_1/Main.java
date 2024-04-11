@@ -7,8 +7,8 @@ import java.util.Scanner;
 
 public class Main {
     // 상 우 하 좌  대각선
-    static int[] dr = {-1, 0, 1, 0, -1, -1, 1, 1};
-    static int[] dc = {0, 1, 0, -1, -1, 1, -1, 1};
+    static int[] dr = {-1, 0, 1, 0, -1, 1, 1, -1};
+    static int[] dc = {0, 1, 0, -1, 1, 1, -1, -1};
 
     static int[][] map;
     static Santa[] santa;
@@ -35,20 +35,23 @@ public class Main {
             int santa_r = sc.nextInt();
             int santa_c = sc.nextInt();
 
-            santa[i] = new Santa(idx, santa_r, santa_c, 0, true, 0);
+            santa[idx] = new Santa(idx, santa_r, santa_c, 0, true, 0);
             map[santa_r][santa_c] = idx;
         }
 
         for (int i = 0; i < m; i++) {
-            if (!isContinue()) break;
             moveRudolf();
+            if (!isContinue()) break;
             for (int s = 1; s <= p; s++) {
-                if (santa[s].isAlive && santa[s].wakeUp == 0) {
-                    moveSanta(santa[s]);
-                } else {
-                    santa[s].wakeUp--;
+                if (santa[s].isAlive) {
+                    if (santa[s].wakeUp > 0) {
+                        santa[s].wakeUp--;
+                    } else if (santa[s].wakeUp == 0){
+                        moveSanta(santa[s]);
+                    }
                 }
             }
+            if (!isContinue()) break;
             getBonus();
         }
 
@@ -85,20 +88,20 @@ public class Main {
         Collections.sort(list);
 
         Santa san = list.get(0);
-        int d = getDirection(san, rudolf);
+        int dir = getDirection(san, rudolf);
         map[rudolf.r][rudolf.c] = 0;
-        rudolf.r -= dr[d];
-        rudolf.c -= dc[d];
+        rudolf.r -= dr[dir];
+        rudolf.c -= dc[dir];
         map[rudolf.r][rudolf.c] = -1;
 
         if (san.r == rudolf.r && san.c == rudolf.c) {
             san.score += c;
-            san.r -= dr[d] * c;
-            san.c -= dc[d] * c;
+            san.r -= dr[dir] * c;
+            san.c -= dc[dir] * c;
             if (isRange(san.r, san.c)) {
-                san.wakeUp += 2;
+                san.wakeUp = 2;
                 map[san.r][san.c] = san.idx;
-                interact(san, d);
+                interact(san, dir);
             } else {
                 san.isAlive = false;
             }
@@ -136,7 +139,7 @@ public class Main {
             san.score += d;
             san.r -= dr[nd] * d;
             san.c -= dc[nd] * d;
-            san.wakeUp += 2;
+            san.wakeUp = 2;
 
             if (!isRange(san.r, san.c)) san.isAlive = false;
             else {
@@ -165,7 +168,8 @@ public class Main {
                         if (!isRange(temp.r, temp.c)) temp.isAlive = false;
 
                         san = temp;
-                        map[temp.r][temp.c] = san.idx;
+                        map[temp.r][temp.c] = temp.idx;
+
                         isEnd = false;
                     }
                 }
@@ -174,8 +178,9 @@ public class Main {
     }
 
     static boolean isRange(int r, int c) {
-        return 1 <= r && r <= n && 1 <= c && c <= n;
+        return 0 < r && r <= n && 0 < c && c <= n;
     }
+
     static int getDirection(Santa santa, Rudolf rudolf) {
         int dir = -1;
         int moveR = rudolf.r - santa.r;
@@ -189,13 +194,13 @@ public class Main {
             dir = 2;
         } else if (moveR == 0 && moveC < 0) {
             dir = 3;
-        } else if (moveR < 0 && moveC < 0) {
-            dir = 4;
         } else if (moveR < 0 && moveC > 0) {
+            dir = 4;
+        } else if (moveR > 0 && moveC > 0) {
             dir = 5;
         } else if (moveR > 0 && moveC < 0) {
             dir = 6;
-        } else if (moveR > 0 && moveC > 0) {
+        } else if (moveR < 0 && moveC < 0) {
             dir = 7;
         }
 
@@ -203,19 +208,19 @@ public class Main {
     }
 
     static boolean isContinue() {
-        boolean flag = false;
+        boolean alive = false;
         for (int i = 1; i <= p; i++) {
             if (santa[i].isAlive) {
-                flag = true;
+                alive = true;
                 break;
             }
         }
 
-        return flag;
+        return alive;
     }
 
-    static int getDistance(int sanR, int sanC, int rudR, int rudC) {
-        return ((sanR - rudR) * (sanR - rudR)) + ((sanC - rudC) * (sanC - rudC));
+    static int getDistance(int r1, int c1, int r2, int c2) {
+        return (int) (Math.pow((r1 - r2), 2)) + (int) Math.pow((c1 - c2), 2);
     }
 }
 class Rudolf {
