@@ -1,4 +1,4 @@
-package swea.no2023_2_1;
+package swea.no2023_2_pm1;
 
 import java.util.ArrayList;
 import java.util.Collections;
