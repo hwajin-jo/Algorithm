@@ -104,8 +104,8 @@ public class Main {
                 }
                 now.r += dr[d];
                 now.c += dc[d];
-                now.h += dr[d];
-                now.w += dc[d];
+//                now.h += dr[d];
+//                now.w += dc[d];
                 if (idx != now.idx)
                     damage(now.idx);
             }
