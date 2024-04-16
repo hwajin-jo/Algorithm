@@ -28,11 +28,12 @@ public class Main {
 
     static void solve (int depth, int start) {
         if (depth == m) {
-            for (int i = 0; i < temp.length; i++) {
-                System.out.print(temp[i] + " ");
+            StringBuilder sb = new StringBuilder();
+            for (int j : temp) {
+                sb.append(j).append(" ");
             }
-            System.out.println();
 
+            System.out.println(sb);
             return;
         }
 
