@@ -1,6 +1,7 @@
 package baekjoon.no2304;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -13,60 +14,59 @@ public class Main {
 
         List<Building> list = new ArrayList<>();
 
-        int maxIdx = -1;
-        int maxHeight = -1;
+
         for (int i = 0; i < n; i++) {
             int idx = sc.nextInt();
             int height = sc.nextInt();
 
             list.add(new Building(idx, height));
-
-            if (maxHeight < height) {
-                maxIdx = idx;
-                maxHeight = height;
-            }
         }
 
-        list.sort((o1, o2) -> o1.idx - o2.idx);
+        list.sort(Comparator.comparingInt(o -> o.idx));
 
-
-        int pivot = 0;
-        for (Building building : list) {
-            if (building.idx == maxIdx) {
-                break;
+        int maxIdx = -1;
+        int maxHeight = -1;
+        int maxPos = -1;
+        for (int i = 0; i < list.size(); i++) {
+            Building building = list.get(i);
+            if (maxHeight < building.height) {
+                maxIdx = i;
+                maxHeight = building.height;
+                maxPos = building.idx;
             }
-            pivot++;
         }
 
         int res = 0;
 
-        int idx = 0;
+        int move = 0;
         int h = 0;
-        for (int i = 0; i <= pivot; i++) {
+        for (int i = 0; i <= maxIdx; i++) {
             Building building = list.get(i);
 
-            if (building.height > h) {
-                res += (building.idx - idx) * h;
-                idx = building.idx;
+            if (h < building.height) {
+                res += (building.idx - move) * h;
+                move = building.idx;
                 h = building.height;
             }
         }
 
+        res += maxHeight;
 
-        Building high = list.get(list.size() - 1);
-        for (int i = pivot; i < list.size(); i++) {
+        int idx = 0;
+        move = 0; h = 0;
+        for (int i = list.size() - 1; i >= maxIdx; i--) {
             Building building = list.get(i);
 
-            if (building.height > high.height) {
-                res += (high.idx - building.idx) * high.height;
-                high = building;
+            if (h < building.height) {
+                res += (move - building.idx) * h;
+                move = building.idx;
+                h = building.height;
+                idx = building.idx;
             }
         }
+        res += (idx - maxPos) * maxHeight;
 
-        res += maxHeight;
         System.out.println(res);
-
-
     }
 }
 
