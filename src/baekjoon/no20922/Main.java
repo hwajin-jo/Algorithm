@@ -23,28 +23,23 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int start = 0, end = 0;
-
-        Map<Integer, Integer> map = new HashMap<>();
-
         int max = -1;
-        boolean flag = true;
-        while (end < n) {
-            int key = arr[end];
+        int start = 0;
+        int[] cnt = new int[100001];
 
-            if (flag)
-                map.put(key, map.getOrDefault(key, 0) + 1);
-
-            if (map.get(key) <= k) {
-                end++;
-                flag = true;
-            } else {
-                key = arr[start++];
-                map.put(key, map.get(key) - 1);
-                flag = false;
+        for (int i = 0; i < n; i++) {
+            cnt[arr[i]]++;
+            if (cnt[arr[i]] > k) {
+                for (int j = start; j < i; j++) {
+                    cnt[arr[j]]--;
+                    if (arr[i] == arr[j]) {
+                        start = j + 1;
+                        break;
+                    }
+                }
             }
 
-            max = Math.max(max, end - start);
+            max = Math.max(max, i - start + 1);
         }
 
         System.out.println(max);
