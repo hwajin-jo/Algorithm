@@ -1,50 +1,52 @@
 package baekjoon.no2668;
 
+import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
 public class Main {
 
-    static Set<Integer> set;
+    static int[] arr;
+    static boolean[] visited;
+    static Set<Integer> tSet;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
         int n = sc.nextInt();
 
-        int[] arr = new int[n + 1];
+        arr = new int[n + 1];
+        visited = new boolean[n + 1];
         for (int i = 1; i <= n; i++) {
             arr[i] = sc.nextInt();
         }
 
-        Set<Integer> set = new TreeSet<>();
+        tSet = new TreeSet<>();
         for (int i = 1; i <= n; i++) {
-           if (isCycle(arr, i)) {
-               int next = arr[i];
-               while (next != i) {
-                   set.add(next);
-                   next = arr[next];
-               }
-               set.add(i);
-           }
+            HashSet<Integer> set = new HashSet<>();
+            set.add(i);
+            if (!tSet.contains(i))
+                solve(i, arr[i], set);
         }
 
-        System.out.println(set.size());
+        System.out.println(tSet.size());
 
-        for (int num : set) {
+        for (int num : tSet) {
             System.out.println(num);
         }
     }
 
-    static boolean isCycle(int[] arr, int origin) {
-        int cnt = 0;
-        int next = arr[origin];
-        while (cnt <= arr.length) {
-            cnt++;
-            if (next == origin) return true;
-            next = arr[next];
+    static void solve(int origin, int cur, HashSet<Integer> set) {
+        if (origin == cur) {
+            tSet.addAll(set);
+            return;
         }
 
-        return false;
+        if (!visited[cur]) {
+            visited[cur] = true;
+            set.add(cur);
+            solve(origin, arr[cur], set);
+            visited[cur] = false;
+        }
     }
 }
