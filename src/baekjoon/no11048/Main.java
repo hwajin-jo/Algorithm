@@ -10,33 +10,22 @@ public class Main {
         int n = sc.nextInt();
         int m = sc.nextInt();
 
-        int[][] arr = new int[n][m];
-        int[][] dp = new int[n][m];
+        int[][] arr = new int[n + 1][m + 1];
 
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
+
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
                 arr[i][j] = sc.nextInt();
             }
         }
 
-        int[] dr = {1, 0, 1};
-        int[] dc = {0, 1, 1};
-
-        dp[0][0] = arr[0][0];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < m; j++) {
-                for (int d = 0; d < 3; d++) {
-                    int nr = i + dr[d];
-                    int nc = j + dc[d];
-
-                    if (nr >= n || nc >= m) continue;
-                    if (dp[nr][nc] < dp[i][j] + arr[nr][nc]) {
-                        dp[nr][nc] = dp[i][j] + arr[nr][nc];
-                    }
-                }
+        int[][] dp = new int[n + 1][m + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                dp[i][j] = Math.max(dp[i - 1][j - 1], Math.max(dp[i - 1][j], dp[i][j - 1]))  + arr[i][j];
             }
         }
 
-        System.out.println(dp[n - 1][m - 1]);
+        System.out.println(dp[n][m]);
     }
 }
