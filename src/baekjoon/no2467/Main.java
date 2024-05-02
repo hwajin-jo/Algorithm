@@ -23,32 +23,24 @@ public class Main {
         int end = n - 1;
 
         int ans = Integer.MAX_VALUE;
-        int near_start = 0;
-        int near_end = 0;
+        int ansStart = 0;
+        int ansEnd = 0;
         while (start < end) {
-            int mid = arr[start] + arr[end];
+            int mid = Math.abs(arr[start] + arr[end]);
 
-            if (mid == 0) {
-                near_start = start;
-                near_end = end;
-                break;
-            } else if (mid < 0) {
-                if (Math.abs(ans) > Math.abs(mid)) {
-                    ans = mid;
-                    near_start = start;
-                    near_end = end;
-                }
-                start++;
-            } else {
-                if (Math.abs(ans) > Math.abs(mid)) {
-                    ans = mid;
-                    near_start = start;
-                    near_end = end;
-                }
+            if (ans > mid) {
+                ans = mid;
+                ansStart = start;
+                ansEnd = end;
+            }
+
+            if (Math.abs(arr[start]) < arr[end]) {
                 end--;
+            } else {
+                start++;
             }
         }
 
-        System.out.println(arr[near_start] + " " + arr[near_end]);
+        System.out.println(arr[ansStart] + " " + arr[ansEnd]);
     }
 }
