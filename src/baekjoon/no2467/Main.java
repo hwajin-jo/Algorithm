@@ -22,11 +22,11 @@ public class Main {
         int start = 0;
         int end = n - 1;
 
-        long ans = Long.MAX_VALUE;
+        int ans = Integer.MAX_VALUE;
         int near_start = 0;
         int near_end = 0;
         while (start < end) {
-            long mid = arr[start] + arr[end];
+            int mid = arr[start] + arr[end];
 
             if (mid == 0) {
                 near_start = start;
