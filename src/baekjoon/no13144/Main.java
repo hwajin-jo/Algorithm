@@ -15,25 +15,27 @@ public class Main {
 
         int n = Integer.parseInt(st.nextToken());
         int[] arr = new int[n];
+        int[] cnt = new int[100001];
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < n; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        int ans = n;
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int s = 0; s < n; s++) {
-            int e = s + 1;
-            map.put(arr[s], map.getOrDefault(arr[s], 0) + 1);
-            while (e < n) {
-                if (arr[s] == arr[e]) break;
-                map.put(arr[e], map.getOrDefault(arr[e], 0) + 1);
-                if (map.get(arr[e]) > 1) break;
-                map.put(arr[e], map.getOrDefault(arr[e], 0) + 1);
-                ans++;
-                e++;
+        long ans = 0;
+        int s = 0, e = 0;
+        cnt[arr[e]]++;
+        while (s <= e && e <= n - 1) {
+            ans += e - s + 1;
+            e++;
+            if (e <= n - 1) {
+                cnt[arr[e]]++;
+
+                while (cnt[arr[e]] >= 2) {
+                    cnt[arr[s]]--;
+                    s++;
+                }
             }
-            map.put(arr[s], map.get(arr[s]) - 1);
+
         }
 
         System.out.println(ans);
