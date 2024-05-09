@@ -14,7 +14,7 @@ public class Main {
             int ans = 1;
             Map<String, Integer> map = new HashMap<>();
             while (N-- > 0) {
-                String name = sc.next();
+                sc.next();
                 String category = sc.next();
 
                 map.put(category, map.getOrDefault(category, 0) + 1);
