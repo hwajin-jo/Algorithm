@@ -68,15 +68,18 @@ public class Main {
         int max = 0;
         while (!q.isEmpty()) {
             Point now = q.poll();
-            max = Math.max(max, now.cnt);
+            if (copy[now.r][now.c] != -2)
+                max = Math.max(max, now.cnt);
             for (int d = 0; d < 4; d++) {
                 int nr = now.r + dr[d];
                 int nc = now.c + dc[d];
                 if (nr < 0 || nc < 0 || nr >= n || nc >= n) continue;
                 if (visited[nr][nc]) continue;
                 if (copy[nr][nc] == -1) continue;
+
                 visited[nr][nc] = true;
-                copy[nr][nc] = now.cnt + 1;
+                if (copy[nr][nc] != -2)
+                    copy[nr][nc] = now.cnt + 1;
                 q.add(new Point(nr, nc, now.cnt + 1));
             }
         }
@@ -116,7 +119,7 @@ public class Main {
             Point p = virusList.get(i);
             for (int j = 0; j < temp.length; j++) {
                 if (p.r == temp[j].r && p.c == temp[j].c) continue;
-                copy[p.r][p.c] = -1;
+                copy[p.r][p.c] = -2;
             }
         }
 
