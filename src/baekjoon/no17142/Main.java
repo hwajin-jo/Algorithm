@@ -115,10 +115,9 @@ public class Main {
         }
 
         // 비활성 바이러스인 경우
-        for (int i = 0; i < virusList.size(); i++) {
-            Point p = virusList.get(i);
-            for (int j = 0; j < temp.length; j++) {
-                if (p.r == temp[j].r && p.c == temp[j].c) continue;
+        for (Point p : virusList) {
+            for (Point point : temp) {
+                if (p.r == point.r && p.c == point.c) continue;
                 copy[p.r][p.c] = -2;
             }
         }
