@@ -20,12 +20,9 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-
         int start = 0;
         int end = k - 1;
-
         int sum = 0;
-
         for (int i = start; i <= end; i++) {
             sum += arr[i];
         }
