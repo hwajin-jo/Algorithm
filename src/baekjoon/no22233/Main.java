@@ -25,10 +25,8 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             String[] input = st.nextToken().split(",");
 
-            for (int j = 0; j < input.length; j++) {
-                if (set.contains(input[j])) {
-                    set.remove(input[j]);
-                }
+            for (String s : input) {
+                set.remove(s);
             }
 
             bw.write(set.size() + " \n");
