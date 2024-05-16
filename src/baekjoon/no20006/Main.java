@@ -1,7 +1,7 @@
 package baekjoon.no20006;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,17 +20,14 @@ public class Main {
         }
 
         List<Room> roomList = new ArrayList<>();
-        for (int i = 0; i < playerList.size(); i++) {
-            Player player = playerList.get(i);
-
+        for (Player player : playerList) {
             if (roomList.isEmpty()) {
                 Room room = new Room(1, player.level - 10, player.level + 10);
                 roomList.add(room);
                 room.players.add(player);
             } else {
                 boolean flag = true;
-                for (int j = 0; j < roomList.size(); j++) {
-                    Room room = roomList.get(j);
+                for (Room room : roomList) {
                     if (room.low <= player.level && player.level <= room.high && room.size < m) {
                         room.size++;
                         room.players.add(player);
@@ -48,7 +45,7 @@ public class Main {
         }
 
         for (Room room : roomList) {
-            Collections.sort(room.players, (o1, o2) -> o1.nickname.compareTo(o2.nickname));
+            room.players.sort(Comparator.comparing(o -> o.nickname));
             if (room.size == m) {
                 System.out.println("Started!");
                 for (Player player : room.players) {
