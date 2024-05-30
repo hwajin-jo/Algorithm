@@ -56,6 +56,8 @@ public class Main {
                         pq.add(new Point(i, j));
                 }
             }
+
+            if (arr[x - 1][y - 1] != 0) break;
         }
 
         System.out.println(arr[x - 1][y - 1]);
