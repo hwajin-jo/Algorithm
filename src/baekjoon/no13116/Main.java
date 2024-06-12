@@ -1,8 +1,6 @@
 package baekjoon.no13116;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -19,13 +17,13 @@ public class Main {
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
 
-            int ans = 0;
+            int ans;
             while (true) {
                 if (a > b) {
                     a /= 2;
                 } else if (a < b) {
                     b /= 2;
-                } else if (a == b) {
+                } else {
                     ans = a;
                     break;
                 }
