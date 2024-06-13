@@ -12,7 +12,6 @@ public class Main {
     static int[][] board;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-
         board = new int[size][size];
         set = new HashSet<>();
         for (int i = 0; i < size; i++) {
