@@ -5,63 +5,35 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class Main {
-    static int N;
-    static int[] arr;
-    static char[] op = {'+', '-'};
-    static char[] temp;
-    static long ans;
-    static int res;
-    static Set<String> set;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        N = sc.nextInt();
-        arr = new int[N - 1];
-        temp = new char[N - 2];
-        set = new HashSet<>();
-        for (int i = 0; i < N - 1; i++) {
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        for (int i = 0; i < n; i++) {
             arr[i] = sc.nextInt();
         }
-        res = sc.nextInt();
-        ans = 0;
-        solve(0);
 
-        System.out.println(ans);
-    }
+        long[][] dp = new long[n][21];
+        dp[0][arr[0]] = 1;
+        int plus;
+        int minus;
+        for (int i = 1; i < n - 1; i++) {
+            for (int j = 0; j < 21; j++) {
+                if (dp[i - 1][j] != 0) {
+                    plus = j + arr[i];
+                    minus = j - arr[i];
 
-    static void solve(int depth) {
-        if (depth == N - 2) {
-            if (isValid(res)) {
-                ans++;
+                    if (0 <= plus && plus <= 20) {
+                        dp[i][plus] += dp[i - 1][j];
+                    }
+                    if (0 <= minus && minus <= 20) {
+                        dp[i][minus] += dp[i - 1][j];
+                    }
+                }
             }
-            return;
         }
 
-        for (char c : op) {
-            temp[depth] = c;
-            solve(depth + 1);
-        }
-    }
-
-    static boolean isValid(int res) {
-        int total = arr[0];
-        StringBuilder sb = new StringBuilder();
-        sb.append(arr[0]);
-        for (int i = 0; i < temp.length; i++) {
-            if (temp[i] == '+') {
-                total += arr[i + 1];
-                sb.append('+').append(arr[i + 1]);
-            } else {
-                total -= arr[i + 1];
-                sb.append('-').append(arr[i + 1]);
-            }
-
-            if (total < 0 || total > 20) return false;
-        }
-
-        if (set.contains(sb.toString())) return false;
-        set.add(sb.toString());
-
-        return total == res;
+        System.out.println(dp[n - 2][arr[n - 1]]);
     }
 }
