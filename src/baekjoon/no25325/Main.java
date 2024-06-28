@@ -13,15 +13,15 @@ public class Main {
         sc.nextLine();
         String[] people = sc.nextLine().split(" ");
 
-        for (int i = 0; i < people.length; i++) {
-            map.put(people[i], 0);
+        for (String s : people) {
+            map.put(s, 0);
         }
 
         for (int i = 0; i < n; i++) {
             String[] votes = sc.nextLine().split(" ");
 
-            for (int j = 0; j < votes.length; j++) {
-                map.put(votes[j], map.get(votes[j]) + 1);
+            for (String vote : votes) {
+                map.put(vote, map.get(vote) + 1);
             }
         }
 
