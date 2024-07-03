@@ -1,4 +1,4 @@
-package autoever.no1_2024;
+package autoever2024.no1;
 
 import java.io.*;
 import java.util.*;
