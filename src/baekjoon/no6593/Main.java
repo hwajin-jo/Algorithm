@@ -9,9 +9,9 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        int[] dl = {-1, 1};
-        int[] dr = {-1, 1, 0, 0};
-        int[] dc = {0, 0, -1, 1};
+        int[] dl = {0, 0, 0, 0, -1, 1};
+        int[] dr = {-1, 1, 0, 0, 0, 0};
+        int[] dc = {0, 0, -1, 1, 0, 0};
 
         while (true) {
             int L = sc.nextInt();
@@ -45,25 +45,16 @@ public class Main {
                     break;
                 }
 
-                for (int d = 0; d < 4; d++) {
+                for (int d = 0; d < 6; d++) {
+                    int nl = now.l + dl[d];
                     int nr = now.r + dr[d];
                     int nc = now.c + dc[d];
 
-                    if (nr < 0 || nc < 0 || nr >= R || nc >= C) continue;
-                    if (visited[now.l][nr][nc] > 0) continue;
-                    if (buildings[now.l][nr][nc] == '#') continue;
-                    visited[now.l][nr][nc] = visited[now.l][now.r][now.c] + 1;
-                    q.add(new Point(now.l, nr, nc));
-                }
-
-                for (int d = 0; d < 2; d++) {
-                    int nl = now.l + dl[d];
-
-                    if (nl < 0 || nl >= L) continue;
-                    if (visited[nl][now.r][now.c] > 0) continue;
-                    if (buildings[nl][now.r][now.c] == '#') continue;
-                    visited[nl][now.r][now.c] = visited[now.l][now.r][now.c] + 1;
-                    q.add(new Point(nl, now.r, now.c));
+                    if (nr < 0 || nc < 0 || nl < 0 || nr >= R || nc >= C || nl >= L) continue;
+                    if (visited[nl][nr][nc] > 0) continue;
+                    if (buildings[nl][nr][nc] == '#') continue;
+                    visited[nl][nr][nc] = visited[now.l][now.r][now.c] + 1;
+                    q.add(new Point(nl, nr, nc));
                 }
             }
 
