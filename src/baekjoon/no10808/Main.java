@@ -14,8 +14,8 @@ public class Main {
             cnt[s.charAt(i) - 'a']++;
         }
 
-        for (int i = 0; i < cnt.length; i++) {
-            System.out.print(cnt[i] + " ");
+        for (int j : cnt) {
+            System.out.print(j + " ");
         }
         System.out.println();
     }
