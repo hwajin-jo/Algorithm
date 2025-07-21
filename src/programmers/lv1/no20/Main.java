@@ -6,8 +6,7 @@ import java.util.HashSet;
 public class Main {
 
     public int solution(int[] nums) {
-        int answer = 0;
-        HashSet set = new HashSet<>();
+        HashSet<Integer> set = new HashSet<>();
 
         int max = nums.length / 2;
 
