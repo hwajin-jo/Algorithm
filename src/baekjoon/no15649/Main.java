@@ -1,14 +1,14 @@
 package baekjoon.no15649;
 
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
 
+    static int N, M;
     static int[] arr;
-    static boolean[] visited;
     static int[] temp;
-    static int N;
-    static int M;
+    static boolean[] visited;
+    static StringBuilder sb = new StringBuilder();
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
@@ -19,35 +19,37 @@ public class Main {
         visited = new boolean[N];
         temp = new int[M];
 
-        for (int i = 0; i < N; i++)
-        {
-            arr[i] = i + 1;
+        for (int i = 0; i < N; i++) {
+            arr[i] = sc.nextInt();
         }
 
+        Arrays.sort(arr);
 
-        backtracking(0);
+        solution(0, 0);
+        System.out.println(sb);
     }
 
-    public static void backtracking(int depth)
-    {
+    public static void solution(int depth, int now) {
         if (depth == M) {
-            for (int i = 0; i < M; i++)
-            {
-                System.out.print(temp[i] + " ");
+            for (int i = 0; i < temp.length; i++) {
+                sb.append(temp[i]).append(" ");
             }
-            System.out.println();
+
+            sb.append("\n");
+
             return;
         }
 
-        for (int i = 0; i < N; i++)
-        {
-            if (!visited[i])
-            {
+        for (int i = now; i < N; i++) {
+            if (!visited[i]) {
                 visited[i] = true;
                 temp[depth] = arr[i];
-                backtracking(depth + 1);
+                solution(depth + 1, i + 1);
                 visited[i] = false;
             }
         }
     }
+
 }
+
+
