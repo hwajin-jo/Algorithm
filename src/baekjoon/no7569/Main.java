@@ -8,84 +8,98 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        int m = sc.nextInt();
-        int n = sc.nextInt();
-        int h = sc.nextInt();
-        int[][][] board = new int[h][n][m];
-        boolean[][][] visited = new boolean[h][n][m];
+
+        int N = sc.nextInt();
+        int M = sc.nextInt();
+        int H = sc.nextInt();
+
+        int[] dh = {-1, 1, 0, 0, 0, 0};
+        int[] dr = {0, 0, -1, 1, 0, 0};
+        int[] dc = {0, 0, 0, 0, -1, 1};
+
+        int[][][] arr = new int[H][M][N];
+        boolean[][][] visited = new boolean[H][M][N];
 
         Queue<Point> q = new LinkedList<>();
-        for (int k = 0; k < h; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    board[k][i][j] = sc.nextInt();
-                    if (board[k][i][j] == 1) {
-                        q.add(new Point(i, j, k));
-                        visited[k][i][j] = true;
+        for (int k = 0; k < H; k++) {
+            for (int j = 0; j < M; j++) {
+                for (int i = 0; i < N; i++) {
+                    arr[k][j][i] = sc.nextInt();
+
+                    if (arr[k][j][i] == 1) {
+                        q.add(new Point(i, j, k, arr[k][j][i]));
+                        visited[k][j][i] = true;
                     }
                 }
             }
         }
 
-        boolean flag = true;
-        for (int k = 0; k < h; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (board[k][i][j] == 0) {
-                        flag = false;
+        boolean isZero = false;
+        for (int k = 0; k < H; k++) {
+            for (int j = 0; j < M; j++) {
+                for (int i = 0; i < N; i++) {
+                    if (arr[k][j][i] == 0) {
+                        isZero = true;
                     }
                 }
             }
         }
 
-        if (flag) {
+        if (!isZero) {
             System.out.println(0);
             return;
         }
 
-        int[] dr = {0, 0, -1, 1, 0, 0};
-        int[] dc = {0, 0, 0, 0, -1, 1};
-        int[] dh = {-1, 1, 0, 0, 0, 0};
         while (!q.isEmpty()) {
             Point now = q.poll();
+
             for (int i = 0; i < 6; i++) {
-                int nr = now.r + dr[i];
-                int nc = now.c + dc[i];
-                int nh = now.h + dh[i];
+                int nx = now.i + dr[i];
+                int ny = now.j + dc[i];
+                int nz = now.k + dh[i];
 
-                if (nr < 0 || nc < 0 || nh < 0 || nr >= n || nc >= m || nh >= h) continue;
-                if (board[nh][nr][nc] == -1) continue;
-                if (visited[nh][nr][nc]) continue;
-                visited[nh][nr][nc] = true;
-                board[nh][nr][nc] = board[now.h][now.r][now.c] + 1;
-                q.add(new Point(nr, nc, nh));
-            }
-        }
-
-        int ans = 0;
-        for (int k = 0; k < h; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    if (board[k][i][j] == 0) {
-                        System.out.println(-1);
-                        return;
-                    }
-
-                    ans = Math.max(ans, board[k][i][j]);
+                if (nx < 0 || ny < 0 || nz < 0 || nx >= N || ny >= M || nz >= H) continue;
+                if (arr[nz][ny][nx] != 0) continue;
+                if (!visited[nz][ny][nx]) {
+                    visited[nz][ny][nx] = true;
+                    arr[nz][ny][nx] = now.data + 1;
+                    q.add(new Point(nx, ny, nz, now.data + 1));
                 }
             }
         }
 
-        System.out.println(ans-1);
+        for (int k = 0; k < H; k++) {
+            for (int j = 0; j < M; j++) {
+                for (int i = 0; i < N; i++) {
+                    if (arr[k][j][i] == 0) {
+                        System.out.println(-1);
+                        return;
+                    }
+                }
+            }
+        }
+
+        int days = 0;
+        for (int k = 0; k < H; k++) {
+            for (int j = 0; j < M; j++) {
+                for (int i = 0; i < N; i++) {
+                    days = Math.max(days, arr[k][j][i]);
+                }
+            }
+        }
+
+        System.out.println(days - 1);
     }
 }
 
 class Point {
-    int r, c, h;
+    int i, j, k;
+    int data;
 
-    public Point(int r, int c, int h) {
-        this.r = r;
-        this.c = c;
-        this.h = h;
+    public Point(int i, int j, int k, int data) {
+        this.i = i;
+        this.j = j;
+        this.k = k;
+        this.data = data;
     }
 }
