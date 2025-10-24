@@ -1,7 +1,9 @@
 package baekjoon.no1806;
 
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.StringTokenizer;
 
 public class Main {
 
@@ -12,33 +14,36 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int S = Integer.parseInt(st.nextToken());
 
-        int[] arr = new int[N+1];
+        int[] arr = new int[N + 1];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(arr);
-
-        int left = 0;
-        int right = 0;
-        int minLength = Integer.MAX_VALUE;
+        int start = 0;
+        int end = 0;
         int sum = 0;
-        while (left <= N &&right <= N) {
+        int ans = Integer.MAX_VALUE;
+        while (start <= N  && end <= N) {
             if (sum >= S) {
-                int diff = right - left;
-                minLength = Math.min(diff, minLength);
-                sum -= arr[left++];
-            } else {
-                sum += arr[++right];
+                ans = Math.min(ans, end - start);
+            }
+
+
+
+            if (sum < S) {
+                sum += arr[end++];
+            }
+            else {
+                sum -= arr[start++];
             }
         }
 
-        if (minLength == Integer.MAX_VALUE)
+        if (ans == Integer.MAX_VALUE) {
             System.out.println(0);
-        else
-            System.out.println(minLength);
+        } else {
+            System.out.println(ans);
+        }
     }
 }
-

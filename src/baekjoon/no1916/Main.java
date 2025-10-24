@@ -3,71 +3,80 @@ package baekjoon.no1916;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
 public class Main {
 
+    static ArrayList<ArrayList<Node>> graph;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int n = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine());
-        int m = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
 
-        final int INF = 1000000000;
+        graph = new ArrayList<>();
 
-        int[][] graph = new int[n + 1][n + 1];
-        int[] cost = new int[n + 1];
-        boolean[] visited = new boolean[n + 1];
-
-        for (int i = 0; i <= n; i++) {
-            cost[i] = INF;
-
-            for (int j = 0; j <= n; j++) {
-                graph[i][j] = INF;
-            }
+        for (int i = 0; i < N + 1; i++) {
+            graph.add(new ArrayList<>());
         }
 
-        for (int i = 0; i < m; i++) {
+        for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
+            int s = Integer.parseInt(st.nextToken());
+            int e = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
 
-            int a = Integer.parseInt(st.nextToken());
-            int b = Integer.parseInt(st.nextToken());
-            int w = Integer.parseInt(st.nextToken());
-
-           if (graph[a][b] > w) {
-               graph[a][b] = w;
-           }
+            graph.get(s).add(new Node(e, c));
         }
 
         st = new StringTokenizer(br.readLine());
-
         int start = Integer.parseInt(st.nextToken());
         int end = Integer.parseInt(st.nextToken());
 
-        cost[start] = 0;
+        int ans = solution(start, end, N);
+        System.out.println(ans);
+    }
 
-        for (int i = 1; i <= n; i++) {
-            int min = INF;
-            int minIndex = -1;
-            for (int j = 1; j <= n; j++) {
-                if (min > cost[j] && !visited[j]) {
-                    min = cost[j];
-                    minIndex = j;
-                }
+    private static int solution(int start, int end, int N) {
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        boolean[] visited = new boolean[N + 1];
+
+        pq.add(new Node(start, 0));
+
+        while (!pq.isEmpty()) {
+            Node cur = pq.poll();
+            if (cur.city == end) {
+                return cur.cost;
             }
 
-            if (minIndex == -1) break;
-            visited[minIndex] = true;
+            visited[cur.city] = true;
 
-            for (int j = 1; j <= n; j++) {
-                if (cost[j] > cost[minIndex] + graph[minIndex][j]) {
-                    cost[j] = cost[minIndex] + graph[minIndex][j];
+            for (Node next: graph.get(cur.city)) {
+                if (!visited[next.city]) {
+                    pq.add(new Node(next.city, cur.cost + next.cost));
                 }
             }
         }
 
-        System.out.println(cost[end]);
+
+        return -1;
+    }
+}
+
+class Node implements Comparable<Node> {
+    int city;
+    int cost;
+
+    public Node(int city, int cost) {
+        this.city = city;
+        this.cost = cost;
+    }
+    @Override
+    public int compareTo(Node o) {
+        return this.cost - o.cost;
     }
 }
