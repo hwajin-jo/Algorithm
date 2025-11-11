@@ -1,89 +1,90 @@
 package baekjoon.no3190;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
 
-    static int d = 0;
-    // 우 하 좌 상
+    static int N;
+    static int[][] arr;
     static int[] dr = {0, 1, 0, -1};
     static int[] dc = {1, 0, -1, 0};
+    static Map<Integer, String> map;
+    static int times = 0;
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st = new StringTokenizer(br.readLine());
 
-        int N = Integer.parseInt(st.nextToken());
-        st = new StringTokenizer(br.readLine());
-        int K = Integer.parseInt(st.nextToken());
-
-        int[][] arr = new int[N][N];
+        N = Integer.parseInt(br.readLine());
+        int K = Integer.parseInt(br.readLine());
+        arr = new int[N][N];
 
         for (int i = 0; i < K; i++) {
-            st = new StringTokenizer(br.readLine());
+            String[] apple = br.readLine().split(" ");
 
-            int r = Integer.parseInt(st.nextToken()) - 1;
-            int c = Integer.parseInt(st.nextToken()) - 1;
+            int r = Integer.parseInt(apple[0]) - 1;
+            int c = Integer.parseInt(apple[1]) - 1;
 
-            arr[r][c] = 1; // 사과 위치
+            arr[r][c] = 1;
         }
 
-        st = new StringTokenizer(br.readLine());
-        int L = Integer.parseInt(st.nextToken());
+        int L = Integer.parseInt(br.readLine());
+        map = new HashMap<>();
 
-        Map<Integer, String> map = new HashMap<>();
         for (int i = 0; i < L; i++) {
-            st = new StringTokenizer(br.readLine());
-            int sec = Integer.parseInt(st.nextToken());
-            String dir = st.nextToken();
-            map.put(sec, dir);
+            String[] cmd = br.readLine().split(" ");
+            map.put(Integer.parseInt(cmd[0]), cmd[1]);
         }
 
-        int time = 0;
-        List<Point> snake = new ArrayList<>();
-        snake.add(new Point(0, 0));
+        solve();
 
+        System.out.println(times);
+    }
+
+    static void solve() {
+        List<Point> list = new ArrayList<>();
+        list.add(new Point(0, 0));
         int nowR = 0;
         int nowC = 0;
+        int d = 0;
         while (true) {
-            time++;
-
+            times++;
             int nr = nowR + dr[d];
             int nc = nowC + dc[d];
 
-            if (isFinish(N, snake, nr, nc)) break; // 벽에 부딪칠 경우 종류
-
-            if (arr[nr][nc] == 1) { // 사과를 만나는 경우 그대로 넣어줌
-                arr[nr][nc] = 0;
-                snake.add(new Point(nr, nc));
-            } else { // 사과가 없는 경우
-                snake.add(new Point(nr, nc));
-                snake.remove(0); // 꼬리 부분 삭제
+            if (isFinished(nr, nc, list)) {
+                break;
             }
 
-            if (map.containsKey(time)) { // 방향 전환
-                if (map.get(time).equals("D")) { // 오른쪽으로 방향 전환
+            if (arr[nr][nc] == 1) {
+                list.add(new Point(nr, nc));
+                arr[nr][nc] = 0;
+            } else {
+                list.remove(0);
+                list.add(new Point(nr, nc));
+            }
+
+            if (map.containsKey(times)) {
+                if (map.get(times).equals("D")) {
                     d += 1;
                     if (d == 4) d = 0;
-                } else { // 왼쪽으로 방향 전환
+                } else {
                     d -= 1;
                     if (d == -1) d = 3;
                 }
-
             }
 
             nowR = nr;
             nowC = nc;
         }
-
-        System.out.println(time);
     }
 
-    private static boolean isFinish(int N, List<Point> snake, int nr, int nc) {
-        if (nr < 0 || nc < 0 || nr >= N || nc >= N) return true; // 벽에 부딪히거나
+    static boolean isFinished(int r, int c, List<Point> list) {
+        if (r < 0 || c < 0 || r >= N || c >= N) return true;
 
-        for (Point point : snake) { // 자기자신과 부딫히는 경우 종료
-            if (point.r == nr && point.c == nc)
+        for (Point p : list) {
+            if (p.r == r && p.c == c)
                 return true;
         }
 
@@ -99,4 +100,3 @@ class Point {
         this.c = c;
     }
 }
-
