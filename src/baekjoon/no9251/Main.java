@@ -24,6 +24,7 @@ public class Main {
             }
         }
 
+        StringBuilder sb = new StringBuilder();
         System.out.println(dp[lenA][lenB]);
     }
 }
