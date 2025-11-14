@@ -1,46 +1,55 @@
 package baekjoon.no11660;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.Scanner;
+import java.io.*;
+import java.util.StringTokenizer;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Scanner sc= new Scanner(System.in);
-
-        int n = sc.nextInt();
-        int m = sc.nextInt();
-
-        int[][] arr = new int[n+1][n+1];
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                arr[i][j] = sc.nextInt();
-            }
-        }
-
-        // 누적합 만들기
-        int[][] acc = new int[n+1][n+1];
-
-        for (int i = 1; i <= n; i++) {
-            for (int j = 1; j <= n; j++) {
-                acc[i][j] = acc[i-1][j] + acc[i][j-1] - acc[i-1][j-1] + arr[i][j];
-            }
-        }
-
-        // (x1, y1) ~ (x2, y2) 까지의 합을 구하고 출력
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-        while (m-- > 0) {
-            int x1 = sc.nextInt();
-            int y1 = sc.nextInt();
-            int x2 = sc.nextInt();
-            int y2 = sc.nextInt();
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
-            bw.write(acc[x2][y2] - acc[x1-1][y2] - acc[x2][y1-1] + acc[x1-1][y1-1] + "\n");
+        int N = Integer.parseInt(st.nextToken());
+        int M = Integer.parseInt(st.nextToken());
+
+        int[][] arr = new int[N][N];
+        int[][] sum = new int[N][N];
+
+        for (int i = 0; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < N; j++) {
+                arr[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+        int prev = 0;
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+               sum[i][j] = prev + arr[i][j];
+               prev = sum[i][j];
+            }
+        }
+
+
+
+        for (int i = 0; i < M; i++) {
+            st = new StringTokenizer(br.readLine());
+            int x1 = Integer.parseInt(st.nextToken()) - 1;
+            int y1 = Integer.parseInt(st.nextToken()) - 1;
+
+            int x2 = Integer.parseInt(st.nextToken()) - 1;
+            int y2 = Integer.parseInt(st.nextToken()) - 1;
+
+            if (x1 == x2 && y1 == y2) {
+                bw.write(arr[x1][y1] + "\n");
+            } else {
+                bw.write(sum[x2][y2] - sum[x1][y1] + "\n");
+            }
         }
 
         bw.flush();
+        bw.close();
     }
 }
