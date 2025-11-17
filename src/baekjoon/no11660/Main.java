@@ -13,40 +13,37 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
 
-        int[][] arr = new int[N][N];
-        int[][] sum = new int[N][N];
+        int[][] arr = new int[N + 1][N + 1];
+        int[][] prefixSum = new int[N + 1][N + 1];
 
-        for (int i = 0; i < N; i++) {
+        for (int i = 1; i <= N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
+            for (int j = 1; j <= N; j++) {
                 arr[i][j] = Integer.parseInt(st.nextToken());
             }
         }
 
-        int prev = 0;
-
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
-               sum[i][j] = prev + arr[i][j];
-               prev = sum[i][j];
+        // 구간 함 구하기
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= N; j++) {
+                prefixSum[i][j] = prefixSum[i - 1][j] + prefixSum[i][j - 1] - prefixSum[i - 1][j - 1] + arr[i][j];
             }
         }
 
 
-
-        for (int i = 0; i < M; i++) {
+        // 구 합 계산하기
+        int ans = 0;
+        while (M-- > 0) {
             st = new StringTokenizer(br.readLine());
-            int x1 = Integer.parseInt(st.nextToken()) - 1;
-            int y1 = Integer.parseInt(st.nextToken()) - 1;
 
-            int x2 = Integer.parseInt(st.nextToken()) - 1;
-            int y2 = Integer.parseInt(st.nextToken()) - 1;
+            int x1 = Integer.parseInt(st.nextToken());
+            int y1 = Integer.parseInt(st.nextToken());
+            int x2 = Integer.parseInt(st.nextToken());
+            int y2 = Integer.parseInt(st.nextToken());
 
-            if (x1 == x2 && y1 == y2) {
-                bw.write(arr[x1][y1] + "\n");
-            } else {
-                bw.write(sum[x2][y2] - sum[x1][y1] + "\n");
-            }
+            ans = prefixSum[x2][y2] - prefixSum[x1 - 1][y2] - prefixSum[x2][y1 - 1] + prefixSum[x1 - 1][y1 - 1];
+
+            bw.write(ans + "\n");
         }
 
         bw.flush();
