@@ -1,49 +1,56 @@
 package baekjoon.no11725;
 
+import java.io.*;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.StringTokenizer;
 
 public class Main {
 
-    static List<Integer>[] tree;
+    static ArrayList<ArrayList<Integer>> tree;
     static int[] parents;
     static boolean[] visited;
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int N = sc.nextInt();
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st = new StringTokenizer(br.readLine());
 
+        int N = Integer.parseInt(st.nextToken());
+
+        tree = new ArrayList<>();
         parents = new int[N + 1];
         visited = new boolean[N + 1];
 
-        tree = new ArrayList[N + 1];
-        for (int i = 0; i < N + 1; i++) {
-            tree[i] = new ArrayList<>();
+        for (int i = 0; i <= N; i++) {
+            tree.add(new ArrayList<>());
         }
 
-        for (int i = 0; i < N - 1; i++) {
-            int node1 = sc.nextInt();
-            int node2 = sc.nextInt();
+        for (int i = 1; i < N; i++) {
+            st = new StringTokenizer(br.readLine());
 
-            tree[node1].add(node2);
-            tree[node2].add(node1);
+            int node1 = Integer.parseInt(st.nextToken());
+            int node2 = Integer.parseInt(st.nextToken());
+
+            tree.get(node1).add(node2);
+            tree.get(node2).add(node1);
         }
 
-        find(1);
+        getParents(1, 0);
 
         for (int i = 2; i <= N; i++) {
-            System.out.println(parents[i]);
+            bw.write(parents[i] + "\n");
         }
+
+        bw.flush();
+        bw.close();
     }
 
-    public static void find(int nodeNumber) {
-        visited[nodeNumber] = true;
-        for (int i = 0; i < tree[nodeNumber].size(); i++) {
-            int child = tree[nodeNumber].get(i);
-            if (!visited[child]) {
-                parents[child] = nodeNumber;
-                find(child);
-            }
+    private static void getParents(int now, int prev) {
+        parents[now] = prev;
+        visited[now] = true;
+
+        for (int next : tree.get(now)) {
+            if (!visited[next])
+                getParents(next, now);
         }
     }
 }
