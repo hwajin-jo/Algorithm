@@ -18,7 +18,7 @@ public class Main {
         int[] dp = new int[1000001];
         Arrays.fill(dp, Integer.MAX_VALUE);
         dp[N] = 0;
-        Deque<Integer> q = new ArrayDeque<>();
+        Queue<Integer> q = new LinkedList<>();
         q.add(N);
 
         while (!q.isEmpty()) {
@@ -26,17 +26,17 @@ public class Main {
 
             if (isValid(now + 1) && dp[now + 1] > dp[now] + 1) {
                 dp[now + 1] = dp[now] + 1;
-                q.addLast(now + 1);
+                q.add(now + 1);
             }
 
             if (isValid(now - 1) && dp[now - 1] > dp[now] + 1) {
                 dp[now - 1] = dp[now] + 1;
-                q.addLast(now - 1);
+                q.add(now - 1);
             }
 
             if (isValid(now * 2) && dp[now * 2] > dp[now]) {
                 dp[2 * now] = dp[now];
-                q.addFirst(now * 2);
+                q.add(now * 2);
             }
         }
         System.out.println(dp[K]);
