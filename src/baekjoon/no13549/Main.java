@@ -1,63 +1,48 @@
 package baekjoon.no13549;
 
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.*;
 
 public class Main {
 
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-        int N = sc.nextInt();
-        int K = sc.nextInt();
+        String[] data = br.readLine().split(" ");
 
-        boolean[] visited = new boolean[100001];
+        int N = Integer.parseInt(data[0]);
+        int K = Integer.parseInt(data[1]);
 
-        Queue<Point> q = new LinkedList<>();
-        q.add(new Point(N, 0));
-        visited[N] = true;
+        int[] dp = new int[1000001];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[N] = 0;
+        Deque<Integer> q = new ArrayDeque<>();
+        q.add(N);
 
-        int ans = Integer.MAX_VALUE;
         while (!q.isEmpty()) {
-            Point now = q.poll();
+            int now = q.poll();
 
-            if (now.data == K) {
-                ans = Math.min(ans, now.cnt);
+            if (isValid(now + 1) && dp[now + 1] > dp[now] + 1) {
+                dp[now + 1] = dp[now] + 1;
+                q.addLast(now + 1);
             }
 
-            int prev = now.data - 1;
-            int next = now.data + 1;
-            int jump = now.data * 2;
-
-            if (isValid(jump) && !visited[jump]) {
-                visited[jump] = true;
-                q.add(new Point(jump, now.cnt));
+            if (isValid(now - 1) && dp[now - 1] > dp[now] + 1) {
+                dp[now - 1] = dp[now] + 1;
+                q.addLast(now - 1);
             }
 
-            if (isValid(prev) && !visited[prev]) {
-                visited[prev] = true;
-                q.add(new Point(prev, now.cnt + 1));
-            }
-            if (isValid(next) && !visited[next]) {
-                visited[next] = true;
-                q.add(new Point(next, now.cnt + 1));
+            if (isValid(now * 2) && dp[now * 2] > dp[now]) {
+                dp[2 * now] = dp[now];
+                q.addFirst(now * 2);
             }
         }
-
-        System.out.println(ans);
+        System.out.println(dp[K]);
     }
 
-    static boolean isValid(int data) {
-        return (0 <= data) && (data <= 100000);
-    }
-}
-
-class Point {
-    int data;
-    int cnt;
-    public Point(int data, int cnt) {
-        this.data = data;
-        this.cnt = cnt;
+    private static boolean isValid(int data) {
+        return 0 <= data && data <= 100000;
     }
 }
