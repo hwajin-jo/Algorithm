@@ -12,59 +12,64 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         int N = Integer.parseInt(st.nextToken());
-        int[] cards = new int[N];
+        int[] card = new int[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
-            cards[i] = Integer.parseInt(st.nextToken());
+            card[i] = Integer.parseInt(st.nextToken());
         }
 
-        Arrays.sort(cards);
+        Arrays.sort(card);
 
         st = new StringTokenizer(br.readLine());
         int M = Integer.parseInt(st.nextToken());
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < M; i++) {
-            int x = Integer.parseInt(st.nextToken());
+            int target = Integer.parseInt(st.nextToken());
+            int leftIdx = lowerBound(target, card);
+            int rightIdx = UpperBound(target, card);
 
-            int lowerBoundIndex = findLowerBoundIndex(cards, x); // x 이상의 값이 처음으로 나타나는 위치
-            int upperBoundIndex = findUpperBoundIndex(cards, x); // x 초과의 값이 처음으로 나타나는 위치
-            bw.write(upperBoundIndex - lowerBoundIndex + " ");
+
+            int cnt = rightIdx - leftIdx;
+            bw.write(cnt + " ");
         }
-        bw.write("\n");
+
         bw.flush();
+        bw.close();
     }
 
-    private static int findUpperBoundIndex(int[] arr, int x) {
-        int upperBoundIndex = arr.length;
-        int l = 0, r = arr.length - 1;
+    static private int lowerBound(int target, int[] card) {
+        int left = 0;
+        int right = card.length;
 
-        while (l <= r) {
-            int m = (l + r) / 2;
+        while (left < right) {
+            int mid = (right + left) / 2;
 
-            if (arr[m] <= x) l = m + 1;
-            else {
-                upperBoundIndex = m;
-                r = m - 1;
+            if (card[mid] >= target) {
+                right = mid;
+            } else if (card[mid] < target) {
+                left = mid + 1;
             }
         }
-        return upperBoundIndex;
+
+        return left;
     }
 
-    private static int findLowerBoundIndex(int[] arr, int x) {
-        int lowerBoundIndex = arr.length;
-        int l = 0, r= arr.length - 1;
+    static private int UpperBound(int target, int[] card) {
+        int left = 0;
+        int right = card.length;
 
-        while (l <= r) {
-            int m = (l + r) / 2;
+        while (left < right) {
+            int mid = (right + left) / 2;
 
-            if (arr[m] < x) l = m + 1;
-            else {
-                lowerBoundIndex = m;
-                r = m - 1;
+            if (card[mid] > target) {
+                right = mid;
+            } else if (card[mid] <= target) {
+                left = mid + 1;
             }
         }
-        return lowerBoundIndex;
+
+        return right;
     }
 }
