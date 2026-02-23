@@ -19,8 +19,8 @@ public class Main {
         while (N-- > 0) {
             String option = br.readLine();
 
-            String shortcut = getShortCut(option);
-            options[idx++] = shortcut;
+            String shortcutKey = getShortCutKey(option);
+            options[idx++] = shortcutKey;
         }
 
         for (String result : options) {
@@ -31,7 +31,7 @@ public class Main {
         bw.close();
     }
 
-    private static String getShortCut(String word) {
+    private static String getShortCutKey(String word) {
         String[] data = word.split(" ");
 
         // 1. 만약 단어의 첫 글자 단축키로 지정 되있는지 살펴본다.
@@ -40,7 +40,7 @@ public class Main {
 
             if (!shortKeyList.contains(Character.toUpperCase(first))) {
                 shortKeyList.add(Character.toUpperCase(first));
-                return makeShortCut(data, first, i, 0);
+                return makeShortCutKey(data, first, i, 0);
             }
         }
 
@@ -53,7 +53,7 @@ public class Main {
 
                 if (!shortKeyList.contains(Character.toUpperCase(key))) {
                     shortKeyList.add(Character.toUpperCase(key));
-                    return makeShortCut(data, key, i, j);
+                    return makeShortCutKey(data, key, i, j);
                 }
             }
         }
@@ -62,7 +62,7 @@ public class Main {
         return word;
     }
 
-    private static String makeShortCut(String[] data, char target, int index, int jndex) {
+    private static String makeShortCutKey(String[] data, char target, int index, int jndex) {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < data.length; i++) {
