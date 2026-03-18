@@ -3,14 +3,16 @@ package baekjoon.no20056;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.ClientInfoStatus;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class Main {
 
     static int N, M, k;
     static int[] dr = {-1, -1, 0, 1, 1, 1, 0, -1};
     static int[] dc = {0, 1, 1, 1, 0, -1, -1, -1};
+    static List<FireBall>[][] board;
     static List<FireBall> fireBalls = new ArrayList<>();
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -19,6 +21,14 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         k = Integer.parseInt(st.nextToken());
+
+        board = new ArrayList[N][N];
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                board[i][j] = new ArrayList<>();
+            }
+        }
 
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
@@ -29,7 +39,9 @@ public class Main {
             int d = Integer.parseInt(st.nextToken());
 
             FireBall fireBall = new FireBall(r, c, m, s, d);
+            board[r][c].add(fireBall);
             fireBalls.add(fireBall);
+
         }
 
         while (k-- > 0) {
@@ -55,70 +67,75 @@ public class Main {
     }
 
     static void mergeFireBall() {
-        List<FireBall> mergeFireBalls = new ArrayList<>();
-        List<FireBall> newFireBalls = new ArrayList<>();
-        for (FireBall data : fireBalls) {
-            int r = data.r;
-            int c = data.c;
-            boolean isMerged = false;
-            for (FireBall other : fireBalls) {
-                if (other.r == r && other.c == c) {
-                    mergeFireBalls.add(other);
-                    isMerged = true;
-                }
+        List<FireBall>[][] newBoard = new ArrayList[N][N];
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                newBoard[i][j] = new ArrayList<>();
             }
+        }
 
-            if (!isMerged) {
-                newFireBalls.add(new FireBall(data.r, data.c, data.m, data.s, data.d));
-            }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (board[i][j].size() >= 2) {
+                    int totalM =  0;
+                    int totalS = 0;
+                    int evenD = 0;
+                    int oddD = 0;
 
-            int totalM = 0;
-            int totalS = 0;
-            int evenD = 0;
-            int oddD = 0;
-            // 1. 같은 칸에 있는 파이어 볼은 나누어진다.
-            for (FireBall fireBall : mergeFireBalls) {
-                totalM += fireBall.m;
-                totalS += fireBall.s;
-                if (fireBall.d % 2 == 0) {
-                    evenD++;
-                } else {
-                    oddD++;
-                }
-            }
+                    for (FireBall fireBall : board[i][j]) {
+                        totalM += fireBall.m;
+                        totalS += fireBall.s;
+                        if (fireBall.d % 2 == 0) {
+                            evenD++;
+                        } else {
+                            oddD++;
+                        }
+                    }
 
-            // 2. 파이어볼은 4개의 파이어볼로 나우어진다.
-            for (int z = 0; z < 4; z++) {
-                // 1. 질량은 합쳐진 파이어볼 질량의 합 / 5
-                int m = totalM / 5;
-                // 2. 속력은 (합쳐진 파이어볼 속력의 합) / 합쳐진 파이어볼의 개수
-                int s = totalS / mergeFireBalls.size();
-                int d = -1;
-                // 3. 합쳐지는 파이어볼의 방향이 모두 홀수 or 짝수이면, 방향은 0, 2, 4, 6
-                //    그렇지 않으면 1, 3, 5, 7 이 된다.
-                if ((evenD == 0 && oddD > 0) || (evenD > 0 && oddD == 0)) {
-                    d = z * 2;
-                } else {
-                    d = (z * 2) + 1;
-                }
+                    int m = totalM / 5;
+                    if (m == 0) continue;
 
-                // 4. 질량이 0인 파이어 볼은 소멸되어 없어진다.
-                if (m > 0) {
-                    FireBall newFireBall = new FireBall(r, c, m, s, d);
-                    newFireBalls.add(newFireBall);
+                    int s = totalS / board[i][j].size();
+
+                    for (int z = 0; z < 4; z++) {
+                        int d = z * 2;
+                        if (oddD > 0 && evenD > 0) {
+                            d = z * 2 + 1;
+                        }
+                        FireBall fireBall = new FireBall(i, j, m, s, d);
+                        newBoard[i][j].add(fireBall);
+                    }
+                } else if (board[i][j].size() == 1){
+                    newBoard[i][j].add(board[i][j].get(0));
                 }
             }
         }
 
-        fireBalls = new ArrayList<>(newFireBalls);
+        fireBalls = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (newBoard[i][j].size() > 0) {
+                    fireBalls.addAll(newBoard[i][j]);
+                }
+            }
+        }
+
+        board = newBoard;
     }
 
 
     static void moveFireBall() {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                board[i][j] = new ArrayList<>();
+            }
+        }
         for (FireBall fireBall : fireBalls) {
-            // 모든 파이어볼은 자신의 방향 d로 s만큼 이동한다.
-            int nr = (fireBall.r + dr[fireBall.d] * ( fireBall.s % N ) + N) % N;
-            int nc = (fireBall.c + dc[fireBall.d] * ( fireBall.s % N ) + N) % N;
+            int nr = (fireBall.r + dr[fireBall.d] * (fireBall.s % N) + N) % N;
+            int nc = (fireBall.c + dc[fireBall.d] * (fireBall.s % N) + N) % N;
+
+            board[nr][nc].add(fireBall);
 
             fireBall.r = nr;
             fireBall.c = nc;
